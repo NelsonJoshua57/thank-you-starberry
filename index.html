@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thank You — Nelson</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B1220;
+    --ink-deep:#070C16;
+    --gold:#B8935B;
+    --gold-soft:#D8BC8C;
+    --gold-dim:#8A754F;
+    --star:#F4E9D6;
+    --line:rgba(184,147,91,0.35);
+    --text-on-ink:#F1ECE1;
+    --text-muted:#9FAAC0;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:
+      radial-gradient(ellipse 800px 550px at 50% -8%, rgba(184,147,91,0.16), transparent 62%),
+      var(--ink);
+    color:var(--text-on-ink);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+    position:relative;
+    overflow-x:hidden;
+  }
+
+  /* ---------- Starfield ---------- */
+  .stars{
+    position:fixed;
+    inset:0;
+    z-index:0;
+    pointer-events:none;
+    will-change:transform;
+  }
+  .stars span{
+    position:absolute;
+    width:2px;height:2px;
+    background:var(--star);
+    border-radius:50%;
+    animation:twinkle var(--dur,4s) ease-in-out infinite;
+    animation-delay:var(--del,0s);
+  }
+  .stars .big{width:3px;height:3px; box-shadow:0 0 4px 1px rgba(244,233,214,0.5);}
+  @keyframes twinkle{
+    0%,100%{opacity:0.15; transform:scale(0.8);}
+    50%{opacity:1; transform:scale(1.15);}
+  }
+
+  .shooting{
+    position:fixed;
+    top:12%;
+    left:-10%;
+    width:2px;height:2px;
+    background:var(--star);
+    border-radius:50%;
+    box-shadow:0 0 6px 2px rgba(244,233,214,0.7);
+    z-index:0;
+    pointer-events:none;
+    animation:shoot 9s linear infinite;
+    animation-delay:2s;
+  }
+  .shooting::before{
+    content:"";
+    position:absolute;
+    top:0; right:0;
+    width:90px; height:1px;
+    background:linear-gradient(to left, rgba(244,233,214,0.8), transparent);
+    transform:translateY(0.5px);
+  }
+  @keyframes shoot{
+    0%{transform:translate(0,0); opacity:0;}
+    3%{opacity:1;}
+    18%{transform:translate(60vw,32vh); opacity:0;}
+    100%{transform:translate(60vw,32vh); opacity:0;}
+  }
+
+  /* film-grain overlay for a printed, tactile feel */
+  body::after{
+    content:"";
+    position:fixed;
+    inset:0;
+    z-index:1;
+    pointer-events:none;
+    opacity:0.045;
+    mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .page{
+    max-width:720px;
+    margin:0 auto;
+    padding:72px 40px 60px;
+    position:relative;
+    z-index:2;
+  }
+
+  /* Header */
+  .eyebrow{
+    font-size:11px;
+    letter-spacing:0.28em;
+    text-transform:uppercase;
+    color:var(--gold-soft);
+    margin-bottom:18px;
+    font-weight:500;
+    opacity:0;
+    animation:fadeUp 0.7s ease 0.05s forwards;
+  }
+  h1{
+    font-family:'Fraunces',serif;
+    font-weight:300;
+    font-size:56px;
+    line-height:1.05;
+    letter-spacing:-0.01em;
+    color:var(--text-on-ink);
+    opacity:0;
+    animation:fadeUp 0.8s ease 0.15s forwards;
+  }
+  h1 em{
+    font-style:italic;
+    font-weight:500;
+    color:var(--gold-soft);
+  }
+  .subhead{
+    margin-top:22px;
+    font-size:16px;
+    line-height:1.7;
+    color:var(--text-muted);
+    max-width:540px;
+    opacity:0;
+    animation:fadeUp 0.8s ease 0.28s forwards;
+  }
+  .subhead .spark{color:var(--gold-soft); font-style:italic; font-family:'Fraunces',serif;}
+
+  .journey-tag{
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+    margin-top:32px;
+    padding:8px 16px;
+    border:1px solid var(--line);
+    border-radius:100px;
+    font-size:12px;
+    letter-spacing:0.06em;
+    color:var(--gold-soft);
+    opacity:0;
+    animation:fadeUp 0.8s ease 0.4s forwards;
+    transition:border-color 0.25s ease, background 0.25s ease, transform 0.25s ease;
+  }
+  .journey-tag:hover{
+    border-color:var(--gold);
+    background:rgba(184,147,91,0.08);
+    transform:translateY(-1px);
+  }
+  .journey-tag .dot{width:5px;height:5px;border-radius:50%;background:var(--gold); animation:twinkle 2.4s ease-in-out infinite;}
+
+  /* Stats strip */
+  .stats{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:1px;
+    margin-top:40px;
+    border:1px solid var(--line);
+    border-radius:14px;
+    overflow:hidden;
+    background:var(--line);
+    opacity:0;
+    animation:fadeUp 0.8s ease 0.5s forwards;
+  }
+  .stat{
+    background:var(--ink-deep);
+    padding:20px 16px;
+    text-align:center;
+    transition:background 0.25s ease, transform 0.25s ease;
+  }
+  .stat:hover{
+    background:#0D1728;
+    transform:translateY(-2px);
+  }
+  .stat-num{
+    font-family:'Fraunces',serif;
+    font-size:28px;
+    font-weight:500;
+    color:var(--gold-soft);
+    line-height:1;
+  }
+  .stat-label{
+    margin-top:8px;
+    font-size:10.5px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color:var(--text-muted);
+  }
+
+  /* ---------- Constellation callout: Ben & Starberry ---------- */
+  .constellation-note{
+    margin-top:40px;
+    padding:26px 26px;
+    border:1px solid var(--line);
+    border-radius:16px;
+    background:linear-gradient(160deg, rgba(184,147,91,0.08), rgba(184,147,91,0.02));
+    position:relative;
+    opacity:0;
+    animation:fadeUp 0.8s ease 0.6s forwards;
+    overflow:hidden;
+  }
+  .twin-stars{
+    display:flex;
+    align-items:flex-end;
+    justify-content:center;
+    gap:18px;
+    margin-bottom:14px;
+  }
+  .star-col{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+  }
+  .twin-stars svg{ overflow:visible; }
+  .twin-stars .star-a{
+    width:38px;height:38px;
+    fill:var(--gold-soft);
+    filter:drop-shadow(0 0 10px rgba(216,188,140,0.55));
+    animation:twinkleBig 3.2s ease-in-out infinite;
+  }
+  .twin-stars .star-b{
+    width:15px;height:15px;
+    fill:var(--gold-dim);
+    animation:twinkle 3s ease-in-out infinite 1.2s;
+  }
+  .star-caption{
+    font-size:9.5px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--text-muted);
+  }
+  .star-caption.lead{ color:var(--gold-soft); font-weight:600; }
+  .twin-stars .link{
+    width:52px;height:1px;
+    background:linear-gradient(to right, var(--gold-dim), var(--gold), var(--gold-dim));
+    position:relative;
+    margin-bottom:14px;
+  }
+  @keyframes twinkleBig{
+    0%,100%{opacity:0.75; transform:scale(1);}
+    50%{opacity:1; transform:scale(1.08);}
+  }
+  .constellation-note h3{
+    font-family:'Fraunces',serif;
+    font-style:italic;
+    font-weight:500;
+    font-size:18px;
+    text-align:center;
+    color:var(--gold-soft);
+    margin-bottom:10px;
+  }
+  .constellation-note p{
+    font-size:14px;
+    line-height:1.8;
+    color:var(--text-muted);
+    text-align:center;
+    max-width:480px;
+    margin:0 auto;
+  }
+
+  /* Thread */
+  .thread{
+    position:relative;
+    margin-top:64px;
+    padding-left:44px;
+  }
+  .thread-line{
+    position:absolute;
+    left:15px; top:6px; bottom:6px;
+    width:1px;
+    background:linear-gradient(to bottom, var(--gold) 0%, var(--line) 8%, var(--line) 92%, transparent 100%);
+    transform:scaleY(0);
+    transform-origin:top;
+    animation:drawLine 1.8s cubic-bezier(.65,0,.35,1) 0.7s forwards;
+  }
+
+  .chapter{
+    position:relative;
+    padding-bottom:46px;
+    opacity:0;
+    animation:fadeUp 0.7s ease both;
+    transition:transform 0.3s ease;
+  }
+  .chapter:last-child{padding-bottom:0;}
+  .chapter:hover{transform:translateX(4px);}
+
+  .chapter-icon{
+    position:absolute;
+    left:-44px;
+    top:2px;
+    width:30px;height:30px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .chapter-icon .ring{
+    position:absolute;
+    inset:0;
+    border-radius:50%;
+    border:1px solid var(--gold-dim);
+    transition:border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+  }
+  .chapter:hover .chapter-icon .ring{
+    border-color:var(--gold);
+    box-shadow:0 0 16px 2px rgba(184,147,91,0.35);
+    transform:scale(1.15);
+  }
+  .chapter-icon svg{
+    width:14px;height:14px;
+    stroke:var(--gold-soft);
+    fill:none;
+    stroke-width:1.6;
+    position:relative;
+    z-index:1;
+    transition:stroke 0.3s ease, filter 0.3s ease;
+  }
+  .chapter:hover .chapter-icon svg{
+    stroke:var(--star);
+    filter:drop-shadow(0 0 4px rgba(244,233,214,0.6));
+  }
+  .chapter-icon .twinkle-dot{
+    position:absolute;
+    width:3px;height:3px;
+    border-radius:50%;
+    background:var(--gold);
+    top:-3px; right:-3px;
+    animation:twinkle 2.6s ease-in-out infinite;
+  }
+
+  .chapter-label{
+    font-size:10.5px;
+    letter-spacing:0.24em;
+    text-transform:uppercase;
+    color:var(--gold-soft);
+    margin-bottom:10px;
+    font-weight:600;
+    margin-top:6px;
+  }
+  .chapter-title{
+    font-family:'Fraunces',serif;
+    font-weight:500;
+    font-size:22px;
+    color:var(--text-on-ink);
+    margin-bottom:10px;
+    transition:color 0.3s ease;
+  }
+  .chapter:hover .chapter-title{color:var(--star);}
+  .chapter p{
+    font-size:14.5px;
+    line-height:1.8;
+    color:var(--text-muted);
+    max-width:600px;
+  }
+  .chapter p + p{margin-top:10px;}
+  .names{ color:var(--gold-soft); font-weight:500; transition:color 0.3s ease;}
+  .chapter:hover .names{color:var(--star);}
+
+  .chapter:nth-child(2){animation-delay:0.85s;}
+  .chapter:nth-child(3){animation-delay:0.95s;}
+  .chapter:nth-child(4){animation-delay:1.05s;}
+  .chapter:nth-child(5){animation-delay:1.15s;}
+  .chapter:nth-child(6){animation-delay:1.25s;}
+  .chapter:nth-child(7){animation-delay:1.35s;}
+  .chapter:nth-child(8){animation-delay:1.45s;}
+
+  /* Closing */
+  .closing{
+    margin-top:56px;
+    padding-top:44px;
+    border-top:1px solid var(--line);
+    text-align:center;
+  }
+  .closing-quote{
+    font-family:'Fraunces',serif;
+    font-style:italic;
+    font-weight:400;
+    font-size:20px;
+    line-height:1.6;
+    color:var(--gold-soft);
+    max-width:480px;
+    margin:0 auto 28px;
+  }
+  .closing p{
+    font-size:14.5px;
+    line-height:1.8;
+    color:var(--text-muted);
+    max-width:480px;
+    margin:0 auto;
+  }
+  .signoff{
+    margin-top:30px;
+    font-family:'Fraunces',serif;
+    font-style:italic;
+    font-size:16px;
+    color:var(--text-on-ink);
+  }
+
+  /* Contact */
+  .contact{
+    margin-top:44px;
+    display:flex;
+    justify-content:center;
+    gap:16px;
+    flex-wrap:wrap;
+  }
+  .contact a{
+    color:var(--text-on-ink);
+    text-decoration:none;
+    font-size:13px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:10px 18px;
+    border:1px solid var(--line);
+    border-radius:100px;
+    transition:border-color 0.2s ease, color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+  }
+  .contact a:hover{
+    border-color:var(--gold);
+    color:var(--gold-soft);
+    background:rgba(184,147,91,0.08);
+    transform:translateY(-2px);
+  }
+  .contact svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.6;}
+
+  .stitch{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:8px;
+    margin-top:56px;
+  }
+  .stitch span{
+    width:14px;height:1px;
+    background:var(--line);
+    position:relative;
+  }
+  .stitch span::before, .stitch span::after{
+    content:"";
+    position:absolute;
+    top:-4px;
+    width:1px;height:9px;
+    background:var(--gold-dim);
+  }
+  .stitch span::before{left:2px; transform:rotate(20deg);}
+  .stitch span::after{right:2px; transform:rotate(-20deg);}
+
+  .footer-mark{
+    margin-top:20px;
+    text-align:center;
+    font-size:11px;
+    letter-spacing:0.2em;
+    text-transform:uppercase;
+    color:var(--text-muted);
+    opacity:0.6;
+  }
+
+  @media (max-width:600px){
+    .page{padding:48px 22px 40px;}
+    h1{font-size:38px;}
+    .thread{padding-left:36px;}
+    .chapter-icon{left:-36px; width:26px;height:26px;}
+    .stats{grid-template-columns:1fr 1fr;}
+    .stat:last-child{grid-column:1 / -1;}
+    .contact{gap:10px;}
+  }
+
+  @keyframes fadeUp{
+    from{opacity:0; transform:translateY(10px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+  @keyframes drawLine{
+    from{transform:scaleY(0);}
+    to{transform:scaleY(1);}
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .eyebrow, h1, .subhead, .journey-tag, .stats, .chapter, .constellation-note{animation:none !important; opacity:1 !important;}
+    .thread-line{animation:none !important; transform:scaleY(1) !important;}
+    .stars span, .shooting, .twin-stars svg, .journey-tag .dot, .chapter-icon .twinkle-dot{animation:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<div class="stars" id="starfield"></div>
+<div class="shooting"></div>
+
+<div class="page">
+
+  <div class="eyebrow">A Note Before I Go</div>
+  <h1>Thank <em>You</em>,<br>Nurtur.</h1>
+  <p class="subhead">Today is my last working day — the close of a chapter that began five and a half years ago at <span class="spark">Starberry</span>, a name Ben always said was borrowed from the stars: a reminder that we were each part of something bigger, shining brighter together. Before I go, I wanted to properly thank the people who made this constellation what it was.</p>
+  <div class="journey-tag"><span class="dot"></span>Starberry → Nurtur</div>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-num">5½</div>
+      <div class="stat-label">Years</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">7</div>
+      <div class="stat-label">Teams &amp; Circles</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">60+</div>
+      <div class="stat-label">People to Thank</div>
+    </div>
+  </div>
+
+  <div class="constellation-note">
+    <div class="twin-stars">
+      <div class="star-col">
+        <svg class="star-a" viewBox="0 0 24 24"><path d="M12 2 L14.5 9.5 L22 12 L14.5 14.5 L12 22 L9.5 14.5 L2 12 L9.5 9.5 Z"/></svg>
+        <span class="star-caption lead">Ben · the giant star</span>
+      </div>
+      <span class="link"></span>
+      <div class="star-col">
+        <svg class="star-b" viewBox="0 0 24 24"><path d="M12 2 L14.5 9.5 L22 12 L14.5 14.5 L12 22 L9.5 14.5 L2 12 L9.5 9.5 Z"/></svg>
+        <span class="star-caption">just me, one small star</span>
+      </div>
+    </div>
+    <h3>Two stars, same sky, same day</h3>
+    <p>Ben, you were always the giant star of this sky — the kind so vast and luminous, like the great hypergiants astronomers marvel at, that the rest of us naturally found our place in orbit around your light. You gave me my first spot in this constellation five and a half years ago, and fittingly, we step into our next ones on the very same day. Thank you for always reminding us that we're stars in the same sky, however big or small. Wishing you a bright, bright next chapter.</p>
+  </div>
+
+  <div class="thread">
+    <div class="thread-line"></div>
+
+    <div class="chapter">
+      <div class="chapter-icon">
+        <div class="ring"></div>
+        <div class="twinkle-dot"></div>
+        <svg viewBox="0 0 24 24"><path d="M11 17H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h4l3-3 3 3h4a2 2 0 0 1 2 2v3"/><path d="M8 17v3M16 17v3"/><path d="m16 19 2 2 4-4"/></svg>
+      </div>
+      <div class="chapter-label">Chapter One — The Opportunity</div>
+      <div class="chapter-title">Where It Began</div>
+      <p>To <span class="names">Ben, Navin, Shabari, Touseef, Minisha and Manaasa</span> — thank you for the trust you placed in me from the start, and for every opportunity that helped me grow, both professionally and personally.</p>
+    </div>
+
+    <div class="chapter">
+      <div class="chapter-icon">
+        <div class="ring"></div>
+        <div class="twinkle-dot"></div>
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+      </div>
+      <div class="chapter-label">Chapter Two — Guidance</div>
+      <div class="chapter-title">My Managers</div>
+      <p>To <span class="names">Manoj and Nagammai</span> — for your guidance, trust and constant encouragement. I've learned so much from you both, and I'll genuinely miss our daily catch-ups, the brainstorming, and the way we worked as a team.</p>
+    </div>
+
+    <div class="chapter">
+      <div class="chapter-icon">
+        <div class="ring"></div>
+        <div class="twinkle-dot"></div>
+        <svg viewBox="0 0 24 24"><path d="M18.36 5.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>
+      </div>
+      <div class="chapter-label">Chapter Three — A Decade</div>
+      <div class="chapter-title">Ten Years, One Friendship</div>
+      <p>To <span class="names">Richard</span> — a journey that began back in our Infinity days and carried all the way through Nurtur. Thank you for your friendship, your guidance, and for always being someone I could rely on.</p>
+    </div>
+
+    <div class="chapter">
+      <div class="chapter-icon">
+        <div class="ring"></div>
+        <div class="twinkle-dot"></div>
+        <svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="3"/><path d="M2 21v-2a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5v2"/><circle cx="18" cy="8" r="2.5"/><path d="M17 14.5c2.5 0 5 1.5 5 4.5v2"/></svg>
+      </div>
+      <div class="chapter-label">Chapter Four — The Team</div>
+      <div class="chapter-title">Digital Marketing</div>
+      <p>To <span class="names">Rahul</span> and the entire team — <span class="names">Sriranjini, Prema, Dinesh, Sundhar, Indhu, Dhivyalakshmi, Balaji, Bhakiya, Karpagavalli, Sivabalan, Srinivasan, Urmila, Vigneshwari, Dhaanush and Shafi</span> — thank you for the collaboration, the problem-solving, the lunches and the laughs.</p>
+    </div>
+
+    <div class="chapter">
+      <div class="chapter-icon">
+        <div class="ring"></div>
+        <div class="twinkle-dot"></div>
+        <svg viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76Z"/></svg>
+      </div>
+      <div class="chapter-label">Chapter Five — Behind the Scenes</div>
+      <div class="chapter-title">Support, Development &amp; Design</div>
+      <p>To <span class="names">Sriraj, Vinod, Afsar, Naveen, Suganthi, Nithyanandham, Vikram, Hariharan, Dhivya and Pavithra</span> — thank you for your support and collaboration. It was a genuine pleasure working with all of you.</p>
+    </div>
+
+    <div class="chapter">
+      <div class="chapter-icon">
+        <div class="ring"></div>
+        <div class="twinkle-dot"></div>
+        <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+      </div>
+      <div class="chapter-label">Chapter Six — Every Conversation</div>
+      <div class="chapter-title">Friends &amp; Colleagues</div>
+      <p>To everyone who made these years memorable — including <span class="names">Malathi, Preethi, Bruno, Krishna TB, Dinakaran, Preveen S, Surya, Krishna (PPC), Anandha Krishnan and Sathya</span> — every conversation and shared moment mattered. If I've missed a name here, the gratitude still stands.</p>
+    </div>
+
+    <div class="chapter">
+      <div class="chapter-icon">
+        <div class="ring"></div>
+        <div class="twinkle-dot"></div>
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8 8 8 8M9 15l6-6"/></svg>
+      </div>
+      <div class="chapter-label">Chapter Seven — Off the Clock</div>
+      <div class="chapter-title">The Cricket Gang</div>
+      <p>To <span class="names">Andrews, Srikarthick, Arun, Praveen Na, Deepak, Karthick, Azhar, Srinath, Afridi, Yogesh, Hari, Siva, Sathish, Sankar and Gokul</span> — for the tournaments, the turf cricket, and the friendly competition. Those memories I'll genuinely cherish.</p>
+    </div>
+
+  </div>
+
+  <div class="closing">
+    <div class="closing-quote">"We join a company to build a career — but the greatest thing we take away is the friendships we build."</div>
+    <p>Thank you all for your support, encouragement and friendship over the years. I hope we stay connected, keep cheering each other on, and cross paths again soon.</p>
+    <div class="signoff">With gratitude, Nelson</div>
+  </div>
+
+  <div class="stitch"><span></span><span></span><span></span><span></span><span></span></div>
+
+  <div class="contact">
+    <a href="https://www.linkedin.com/in/nelson-seo-specialist/" target="_blank">
+      <svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-4 0v7h-4V8h4v1.5A5.98 5.98 0 0 1 16 8Z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+      LinkedIn
+    </a>
+    <a href="mailto:Unelson522@gmail.com">
+      <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 6 10-6"/></svg>
+      Unelson522@gmail.com
+    </a>
+    <a href="tel:8248345447">
+      <svg viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3-8.7A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .3 2 .7 3a2 2 0 0 1-.4 2.1L8 10.3a16 16 0 0 0 6 6l1.5-1.5a2 2 0 0 1 2.1-.4c1 .4 2 .6 3 .7a2 2 0 0 1 1.7 2Z"/></svg>
+      824 834 5447
+    </a>
+  </div>
+
+  <div class="footer-mark">Nurtur × Starberry — 2021 to 2026</div>
+
+</div>
+
+<script>
+  // Generate a scattered starfield
+  (function(){
+    var field = document.getElementById('starfield');
+    var count = 70;
+    var frag = document.createDocumentFragment();
+    for (var i = 0; i < count; i++){
+      var s = document.createElement('span');
+      var big = Math.random() < 0.15;
+      if (big) s.className = 'big';
+      s.style.top = (Math.random() * 100) + 'vh';
+      s.style.left = (Math.random() * 100) + 'vw';
+      s.style.setProperty('--dur', (3 + Math.random() * 4) + 's');
+      s.style.setProperty('--del', (Math.random() * 5) + 's');
+      frag.appendChild(s);
+    }
+    field.appendChild(frag);
+  })();
+
+  // Gentle parallax on the starfield following the cursor
+  (function(){
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var field = document.getElementById('starfield');
+    window.addEventListener('mousemove', function(e){
+      var x = (e.clientX / window.innerWidth - 0.5) * 10;
+      var y = (e.clientY / window.innerHeight - 0.5) * 10;
+      field.style.transform = 'translate(' + x + 'px,' + y + 'px)';
+    });
+  })();
+</script>
+
+</body>
+</html>
